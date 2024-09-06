@@ -70,9 +70,9 @@ Tensor3D convolve(const Matrix3D* input, const Tensor3D* filters, int stride){
     int filter_height = filters->matrices[0].height;
     int filter_width = filters->matrices[0].width;
     int filter_depth = filters->matrices[0].depth;
-    int output_height = (padded_input.height - filter_height) / stride + 1; /*(34-3)/2 = 15.5=15*/
-    int output_width = (padded_input.width - filter_width) / stride + 1; /*(34-3)/2 = 15.5=15*/
-    int output_depth = (padded_input.depth - filter_depth) / stride + 1; /*(3-1)/2 = 1*/
+    int output_height = (padded_input.height - filter_height) / stride + 1; /*(34-3)/1 +1 = 32*/
+    int output_width = (padded_input.width - filter_width) / stride + 1; /*(34-3)/1 + 1 = 32*/
+    int output_depth = (padded_input.depth - filter_depth) / stride + 1; /*(3-1)/1 +1 = 3*/
 
     Tensor3D output; /*Initialize a Tensor3D structure to hold the output matrices (Tensor is a high dimensional array)*/
     output.count = num_filters; /*Number of output matrices = number of filters*/
@@ -383,12 +383,12 @@ void train_CNN(Dense* denseLayer, Matrix3D* x_train, float** y_train, int train_
                 int idx = batch * batch_size + i;
 
                 Tensor3D convolved_output = convolve(&x_train[idx], filters, 1); /*Apply the convolution*/
-                /*14x14x1*/
+
                 int flattened_size = denseLayer->input_size;
 
-                float* flattened_input = flatten(&convolved_output, &flattened_size); /*Flatten -> 28xnumber of tensors = 28x16 = 448x1*/
+                float* flattened_input = flatten(&convolved_output, &flattened_size); /*Flatten -> 1024xnumber of tensors = 1024x16 = 16,384x1*/
 
-                /*Apply dropout -> 224x1*/
+                /*Apply dropout -> 8192x1*/
                 float* dropped_input = (float*)malloc(flattened_size * sizeof(float));
                 #pragma omp parallel for
                 for (int j = 0; j < flattened_size; ++j) {

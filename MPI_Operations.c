@@ -175,9 +175,9 @@ Tensor3D convolve(const Matrix3D* input, const Tensor3D* filters, int stride){
     int filter_height = filters->matrices[0].height;
     int filter_width = filters->matrices[0].width;
     int filter_depth = filters->matrices[0].depth;
-    int output_height = (padded_input.height - filter_height) / stride + 1; /*(34-3)/2 = 15.5=15*/
-    int output_width = (padded_input.width - filter_width) / stride + 1; /*(34-3)/2 = 15.5=15*/
-    int output_depth = (padded_input.depth - filter_depth) / stride + 1; /*(3-1)/2 = 1*/
+    int output_height = (padded_input.height - filter_height) / stride + 1; /*(34-3)/1 +1 = 32*/
+    int output_width = (padded_input.width - filter_width) / stride + 1; /*(34-3)/1 + 1 = 32*/
+    int output_depth = (padded_input.depth - filter_depth) / stride + 1; /*(3-1)/1 +1 = 3*/
 
     Tensor3D output; /*Initialize a Tensor3D structure to hold the output matrices (Tensor is a high dimensional array)*/
     output.count = num_filters; /*Number of output matrices = number of filters*/

@@ -417,48 +417,6 @@ void train_CNN(Dense* denseLayer, Matrix3D* x_train, float** y_train, int train_
     free(grad_biases);
 }
 
-Matrix create_matrix(int height, int width) {
-    Matrix matrix;
-    matrix.height = height;
-    matrix.width = width;
-    matrix.data = (float**)malloc(height * sizeof(float*));
-    for (int i = 0; i < height; ++i) {
-        matrix.data[i] = (float*)malloc(width * sizeof(float));
-        memset(matrix.data[i], 0, width * sizeof(float)); // Initialize with 0
-    }
-    return matrix;
-}
-
-Tensor predict(const Tensor3D* input, Dense* denseLayer, Tensor3D* filters) {
-    Tensor output;
-    output.count = input->count;
-    output.matrices = (Matrix*)malloc(output.count * sizeof(Matrix));
-
-    for (int i = 0; i < output.count; ++i) {
-        // Convolutional layer forward pass
-        Tensor3D convolved_output = convolve(&input->matrices[i], filters, 1);
-
-        // Flatten the convolutional output
-        int flattened_size;
-        float* flattened_input = flatten(&convolved_output, &flattened_size);
-
-        // Apply dense layer forward pass
-        float* dense_output = dense_forward(denseLayer, flattened_input);
-
-        // Convert dense layer output back to a matrix (assuming 1D output)
-        output.matrices[i] = create_matrix(1, denseLayer->output_size);
-        for (int j = 0; j < denseLayer->output_size; ++j) {
-            output.matrices[i].data[0][j] = dense_output[j];
-        }
-
-        // Free allocated memory
-        free(flattened_input);
-        free(dense_output);
-        free_Tensor3D(&convolved_output); // Free the memory allocated for convolution output
-    }
-
-    return output;
-}
 
 Matrix create_matrix(int height, int width) {
     Matrix matrix;
